@@ -1,0 +1,8 @@
+body {
+	background-color:rgb(3,50,203);
+	background-image: url(/myfiles/fon.jpg);
+	background-attachment:fixed;
+	background-size:cover;
+	margin:0px 0 0px 0px;
+	font-family:'Open sans';
+}
