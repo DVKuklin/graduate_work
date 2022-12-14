@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomAdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
+Route::controller(CustomAdminController::class)->group(function() {
+    Route::get('/custom_admin','index');
+
+});
