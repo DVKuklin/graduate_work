@@ -50,6 +50,7 @@ class PagesController extends Controller
                 'paragraphs' => $paragraphs
             ];
             return $data;
+            // return ['status'=>'notAuth'];
         } else {
             return ['status'=>'notAuth'];
         }
