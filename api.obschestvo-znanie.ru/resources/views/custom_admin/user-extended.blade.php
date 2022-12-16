@@ -37,8 +37,7 @@
                 <option selected>Название большого раздела</option>
                 <option>...</option>
             </select>        
-        
-            <button type="button" class="btn btn-success m-2" disabled>Применить изменения</button>
+      
         </div>
         
     </div>
@@ -99,87 +98,136 @@
 <script>
     const baseURL = document.location.protocol + "//" + document.location.host + "/api/admin/";
     
-    let user_id = localStorage.getItem('user_id');
+    let current_user = localStorage.getItem('current_user');
+    let current_section = localStorage.getItem('current_section');
 
-    //Загружаем данные и формируем таблицу
-    $.ajax({
-        url: baseURL+"get_data_for_user_extended",
+    dataBoot();
+
+    function dataBoot() {
+      //Загружаем данные и формируем таблицу
+      $.ajax({
+          url: baseURL+"get_data_for_user_extended",
+          data: {
+              current_user: current_user,
+              current_section: current_section,
+              token: "sdfsdfsdfsdfsdf"
+          },       
+          method: 'post',           
+          success: function(data){ 
+              if(data.status === "success"){
+                localStorage.setItem('current_user',data.current_user);
+                localStorage.setItem('current_section',data.current_section);
+
+                  //Заполняем select пользователи
+                  let s = '';
+                  let userActive = '';
+                  data.users.forEach ((item,index,arr) => {
+
+                      if (item.id == data.current_user) {
+                          userActive = "selected";
+                      } else {
+                          userActive == "";
+                      }
+                      s += `<option ${userActive} value="${item.id}">${item.name}</option>`;
+
+                      userActive = "";
+                      // console.log(index);
+                      // inputUsers.options.push({
+                      //     text:item.name,
+                      //     value:item.id
+                      // });
+                      // inputUsers.options[index].text = item.name;
+                      // inputUsers.options[index].value = item.id;
+                  });
+
+                  inputUsers.innerHTML = s;
+                  inputUsers.onchange = setCurrentUser;
+                  
+                  // inputUsers.options.selectedIndex = 0;
+
+                  //Заполняем select разделы
+                  s = '';
+                  let sectionActive = '';
+                  data.sections.forEach ((item,index,arr) => {
+                      if (item.id == data.current_section) {
+                          sectionActive = "selected";
+                      } else {
+                          sectionActive = "";
+                      }
+                      s += `<option ${sectionActive} value="${item.id}">${item.name}</option>`;
+                      sectionActive = "";
+                  });
+
+                  inputSections.innerHTML = s;
+                  inputSections.onchange = setCurrentSection;
+
+                  //Заполняем таблицу
+                  s ='';
+                  for (let i=0;i<data.themes.length;i++){
+
+                      let permission = '';
+                      if (data.themes[i].permission) {
+                          permission = 'checked';
+                      }
+
+                      s += `<tr>  
+                              <td>${data.themes[i].sort}</td>
+                              <td>${data.themes[i].theme}</td>
+                              <td class="text-center">
+                                <div class="custom-control custom-switch">
+                                  <input type="checkbox" 
+                                          ${permission} 
+                                          class="custom-control-input" 
+                                          id="customSwitch${i}"
+                                          onclick = "setPermition(this,${data.themes[i].theme_id})">
+                                  <label class="custom-control-label" for="customSwitch${i}"></label>
+                                </div>
+                              </td>
+                            </tr>;` 
+                  }
+
+                  let tbody = crudTable.querySelector('tbody');
+                  tbody.innerHTML = s;
+              } 
+          }
+      });
+    }
+
+
+    function setCurrentUser() {
+      let user_id = inputUsers.options[inputUsers.options.selectedIndex].value;
+      localStorage.setItem('current_user',user_id);
+      location.reload();
+    }
+
+    function setCurrentSection() {
+      let section_id = inputSections.options[inputSections.options.selectedIndex].value;
+      localStorage.setItem('current_section',section_id);
+      location.reload();
+    }
+
+    function setPermition(el,theme_id) {
+      console.log('user '+localStorage.getItem('current_user'));
+      console.log(el.checked);
+      console.log(theme_id);
+
+      $.ajax({
+        url: baseURL+"set_permition",
         data: {
-            user_id: user_id,
-            section_id: 5,
+            current_user: localStorage.getItem('current_user'),
+            theme_id: theme_id,
+            permition: el.checked,
             token: "sdfsdfsdfsdfsdf"
         },       
         method: 'post',           
         success: function(data){ 
-            if(data.status === "success"){
-                // tools_panel.innerHTML=data.user;
-                console.log(data.users);
-
-                //Заполняем select пользователи
-                let s = '';
-                let userActive = '';
-                data.users.forEach ((item,index,arr) => {
-                    if (index == 0) {
-                        userActive == "selected";
-                    } else {
-                        userActive == "";
-                    }
-                    s += `<option ${userActive} value="${item.id}">${item.name}</option>`;
-
-
-                    // console.log(index);
-                    // inputUsers.options.push({
-                    //     text:item.name,
-                    //     value:item.id
-                    // });
-                    // inputUsers.options[index].text = item.name;
-                    // inputUsers.options[index].value = item.id;
-                });
-
-                inputUsers.innerHTML = s;
-                
-                // inputUsers.options.selectedIndex = 0;
-
-                //Заполняем select разделы
-                s = '';
-                let sectionActive = '';
-                data.sections.forEach ((item,index,arr) => {
-                    if (index == 0) {
-                        sectionActive == "selected";
-                    } else {
-                        sectionActive == "";
-                    }
-                    s += `<option ${sectionActive} value="${item.id}">${item.name}</option>`;
-                });
-
-                inputSections.innerHTML = s;
-
-                //Заполняем таблицу
-                s ='';
-                for (let i=0;i<data.themes.length;i++){
-
-                    let permission = '';
-                    if (data.themes[i].permission) {
-                        permission = 'checked';
-                    }
-
-                    s += 
-`
-<tr>
-        <td>${data.themes[i].sort}</td>
-        <td>${data.themes[i].theme}</td>
-        <td class="text-center">
-            <input type="checkbox" ${permission} data-theme_id="${data.themes[i].theme_id}">
-        </td>
-</tr>
-` 
-                }
-
-                let tbody = crudTable.querySelector('tbody');
-                tbody.innerHTML = s;
-            } 
+            console.log(data);
+            // location.reload();
         }
-    });
+      });
+    }
+
+
 </script>
 
 <style>

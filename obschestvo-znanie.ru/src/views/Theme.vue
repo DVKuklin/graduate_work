@@ -4,14 +4,17 @@
                     v-bind:section="section"
     ></BreadCrumbs>
 
-    <div v-if="isAuth" class="conForThem">
+    <div v-if="isAuth == true" class="conForThem">
         <h3 align="center">{{theme}}</h3>
         <div v-for="(item, i) in paragraphs" :key="i">
             <div class="content" v-html="item.content"></div>
         </div>
     </div>
 
-    <NotAuthMessage v-else></NotAuthMessage>
+    <NotAuthMessage v-else-if="isAuth == false"></NotAuthMessage>
+
+    <div v-else-if="isAuth == 1">Загрузка данных</div>
+
 
     <BreadCrumbs v-bind:sectionURL="sectionURL"
                     v-bind:theme="theme"
