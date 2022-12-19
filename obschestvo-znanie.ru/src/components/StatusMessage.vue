@@ -1,12 +1,19 @@
 <template>
-    <div class = "mesage">
+    <div v-if="status == 'notAuth'" class = "mesage">
         Для Вас контент данной страницы недоступен. Если Вы не авторизованы, пожалуйста авторизутесь на <RouterLink to="/avt/">странице авторизации.</RouterLink>
+    </div>
+    <div v-if="status == 'notAllowed'" class = "mesage">
+        Для Вас контент данной страницы недоступен.
+    </div>
+    <div v-if="status == 'notFound'" class = "mesage">
+        Страница не найдена.
     </div>
 </template>
 
 <script>
     export default {
-        name: "NotAuthMessage",
+        name: "StatusMessage",
+        props: ['status']
     }
 </script>
 

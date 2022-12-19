@@ -17,7 +17,7 @@
                     Пароль:
                 </td>
                 <td align="left">
-                    <input id="authPass" type = "text" />
+                    <input id="authPass" type = "password" />
                 </td>
             </tr>
             <tr>

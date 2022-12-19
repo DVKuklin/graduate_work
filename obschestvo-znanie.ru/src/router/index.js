@@ -9,14 +9,7 @@ import NotFound from '../views/NotFound.vue'
 import { getSections, getThemesAndSectionBySectionUrl } from '../services/methods.js';
 
 
-let sections = await getSections();
-let sectionRoutes = sections.data.map(function(item,index){
-  return {
-    path: '/'+item.url+'/',
-    component: SectionMenu
-  }
-})
-
+let isRoutesLoad = false;
 
 let routes = [
   {
@@ -38,35 +31,8 @@ let routes = [
     path: '/avt/',
     name: 'Authorization',
     component: Authorization
-  }
-]
-
-//Добавляем руты для меню разделов 
-for (let i = 0;i<sectionRoutes.length;i++) {
-    routes.push(sectionRoutes[i]);
-}
-
-//Роуты для тем
-for (let i = 0;i<sections.data.length;i++) {
-  let tempThems = await getThemesAndSectionBySectionUrl(sections.data[i].url);
-
-  for (let j=0; j<tempThems.data.themes.length;j++) {
-    routes.push({
-      path: '/'+sections.data[i].url+'/'+tempThems.data.themes[j].url+'/',
-      component: Theme
-    })
-  }
-}
-
-//Редирект на несуществующие страницы
-routes.push(
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    component: NotFound
   },
-)
-
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,10 +40,56 @@ const router = createRouter({
 })
 
 
-//Редирект на несуществующие страницы дополнение
-router.resolve({
-  name: 'not-found',
-  params: { pathMatch: ['not', 'found'] },
-}).href
 
-export default router
+async function addRoutes() {
+  routes=[];
+  let sectionRoutes;
+  let sections = await getSections();
+  sectionRoutes = sections.data.map(function(item,index){
+    return {
+      path: '/'+item.url+'/',
+      component: SectionMenu
+    }
+  });
+
+  // Добавляем руты для меню разделов 
+  for (let i = 0;i<sectionRoutes.length;i++) {
+    routes.push(sectionRoutes[i]);
+  }
+
+  // Роуты для тем
+  for (let i = 0;i<sections.data.length;i++) {
+    let tempThems = await getThemesAndSectionBySectionUrl(sections.data[i].url);
+
+    for (let j=0; j<tempThems.data.themes.length;j++) {
+      routes.push({
+        path: '/'+sections.data[i].url+'/'+tempThems.data.themes[j].url+'/',
+        component: Theme
+      })
+    }
+  }
+
+  for (let i=0;i<routes.length;i++) {
+    router.addRoute(routes[i]);
+  }
+  router.addRoute(
+    //Редирект на несуществующие страницы
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound
+    }
+  );
+  //Редирект на несуществующие страницы дополнение
+  router.resolve({
+    name: 'not-found',
+    params: { pathMatch: ['not', 'found'] },
+  }).href
+  router.replace(router.currentRoute.value.fullPath);
+
+}
+
+addRoutes();
+
+
+export default router;

@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminApiController extends Controller
 {
+    // http://127.0.0.1:8000/api/admin/get_data_for_user_extended
+    // {
+    //     "current_user":5,
+    //     "token":"sdfsdfsdfsdfsdf",
+    //     "current_section":5
+    // }
     public function getDataForUserExtended(Request $r) {
         if ($r->token != "sdfsdfsdfsdfsdf") {
             return [
@@ -54,7 +60,7 @@ class AdminApiController extends Controller
         $users = User::select('id','name')->get();
 
         //Разделы
-        $sections = Section::select('id','name')->get();
+        $sections = Section::select('id','name')->orderBy('id', 'asc')->get();
 
         //Темы с разрешениями по пользователю
         $res = User::where('id',$user_id)->select('allowed_themes')->first();
@@ -65,12 +71,12 @@ class AdminApiController extends Controller
         $themes_with_permissions = [];
 
         for ($i=0;$i<count($themes);$i++) {
-            $permission=false;
+            $permition=false;
             
             if ($permitions) {
                 for ($j=0;$j<count($permitions);$j++) {
                     if ($permitions[$j]->id == $themes[$i]->id) {
-                        $permission = $permitions[$j]->allowed;
+                        $permition = $permitions[$j]->allowed;
                         break;
                     }
                 }
@@ -81,7 +87,7 @@ class AdminApiController extends Controller
                 'theme_id'=>$themes[$i]->id,
                 'theme'=>$themes[$i]->name,
                 'sort'=>$themes[$i]->sort,
-                'permission'=>$permission
+                'permition'=>$permition
             ];
         }
 
@@ -244,12 +250,12 @@ class AdminApiController extends Controller
         // $themes_with_permissions = [];
 
         // for ($i=0;$i<count($themes);$i++) {
-        //     $permission=false;
+        //     $permition=false;
             
         //     if ($permitions) {
         //         for ($j=0;$j<count($permitions);$j++) {
         //             if ($permitions[$j]->id == $themes[$i]->id) {
-        //                 $permission = $permitions[$j]->allowed;
+        //                 $permition = $permitions[$j]->allowed;
         //                 break;
         //             }
         //         }
@@ -260,7 +266,7 @@ class AdminApiController extends Controller
         //         'theme_id'=>$themes[$i]->id,
         //         'theme'=>$themes[$i]->name,
         //         'sort'=>$themes[$i]->sort,
-        //         'permission'=>$permission
+        //         'permition'=>$permition
         //     ];
         // }
 
