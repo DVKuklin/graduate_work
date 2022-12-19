@@ -4,16 +4,18 @@
                     v-bind:section="section"
     ></BreadCrumbs>
 
-    <div v-if="isAuth == true" class="conForThem">
+    <div v-if="status == 'loading'"><span>Загрузка данных</span></div>
+    <div v-if="status == 'success'" class="conForThem">
         <h3 align="center">{{theme}}</h3>
         <div v-for="(item, i) in paragraphs" :key="i">
             <div class="content" v-html="item.content"></div>
         </div>
     </div>
 
-    <NotAuthMessage v-else-if="isAuth == false"></NotAuthMessage>
+    <StatusMessage v-if="status == 'notAuth'" v-bind:status="status"></StatusMessage>
+    <StatusMessage v-if="status == 'notAllowed'" v-bind:status="status"></StatusMessage>
+    <StatusMessage v-if="status == 'notFound'" v-bind:status="status"></StatusMessage>
 
-    <div v-else-if="isAuth == 1">Загрузка данных</div>
 
 
     <BreadCrumbs v-bind:sectionURL="sectionURL"
@@ -24,18 +26,18 @@
 
 <script>
     import BreadCrumbs from '../components/BreadCrumbs.vue';
-    import NotAuthMessage from '../components/NotAuthMessage.vue';
+    import StatusMessage from '../components/StatusMessage.vue';
     import { getParagraphsAndThemeByUrl } from '../services/methods.js';
     export default {
         name: 'Theme',
-        components: {BreadCrumbs, NotAuthMessage},
+        components: {BreadCrumbs, StatusMessage},
         data() {
             return {
                 paragraphs: [],
                 theme: '',
                 sectionURL:'',
                 section:'',
-                isAuth: 1
+                status: 'loading'
             }
         },
         async created() {
@@ -51,14 +53,25 @@
                 console.log(data);
 
                 if (data.status == 'notAuth' || data.data.status == 'notAuth') {
-                    this.isAuth=false;
+                    this.status='notAuth';
+                    console.log(data.data.theme);
+                    this.sectionURL = "/"+urls[0];
+                    this.theme = data.data.theme;
+                    this.section = data.data.section;
                 } else if (data.data.status == 'success') {
                     this.sectionURL = "/"+urls[0];
                     this.paragraphs = data.data.paragraphs;
                     this.theme = data.data.theme;
                     this.section = data.data.section;
-                    this.isAuth=true;
-                    console.log(data.data);
+                    this.status='success';
+                    // console.log(data.data);
+                } else if (data.data.status == 'notAllowed') {
+                    this.status='notAllowed';
+                    this.sectionURL = "/"+urls[0];
+                    this.theme = data.data.theme;
+                    this.section = data.data.section;
+                } else if (data.data.status == 'notFound') {
+                    this.status='notFound';
                 }
 
 

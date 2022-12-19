@@ -165,9 +165,11 @@
                   s ='';
                   for (let i=0;i<data.themes.length;i++){
 
-                      let permission = '';
-                      if (data.themes[i].permission) {
-                          permission = 'checked';
+                      let permition = '';
+                      console.log(data.themes[i].theme);
+                      console.log(data.themes[i].permition);
+                      if (data.themes[i].permition=='true') {
+                          permition = 'checked';
                       }
 
                       s += `<tr>  
@@ -176,7 +178,7 @@
                               <td class="text-center">
                                 <div class="custom-control custom-switch">
                                   <input type="checkbox" 
-                                          ${permission} 
+                                          ${permition} 
                                           class="custom-control-input" 
                                           id="customSwitch${i}"
                                           onclick = "setPermition(this,${data.themes[i].theme_id})">
@@ -221,8 +223,8 @@
         },       
         method: 'post',           
         success: function(data){ 
-            console.log(data);
-            // location.reload();
+            // console.log(data);
+            location.reload();
         }
       });
     }

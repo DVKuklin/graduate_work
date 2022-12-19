@@ -27,33 +27,82 @@ class PagesController extends Controller
         return $data;
     }
 
+
+
+    // URL get_paragraps_by_section_and_theme_url
+    // {
+    //     "custom_token":"FcecX5VdLm3f4wmas3HQtJH49eLhyXZ8Tm4PeGRTCwUVCA3PdCXCepM3ea15mHRrptwe26l9SQrgUnEL",
+    //     "section_url":"section_5",
+    //     "theme_url":"theme_36"
+    // }
     function getParagraphsBySectionAndThemeUrl(Request $r) {
-        $res = User::where('custom_token',$r->token)
+        $status='';
+
+        $user = User::where('custom_token',$r->custom_token)
+                    ->select('allowed_themes','id')
                     ->first();
 
-        if ($res != null) {
-            $section = Section::where('url',$r->section_url)->first();
-        
-            $theme = Theme::where('url',$r->theme_url)
-                           ->where('section',$section->id)
-                           ->select('id','name', 'sort')
-                           ->first();
-            
-            $paragraphs = Paragraph::where('theme',$theme->id)
-                            ->orderBy('sort', 'asc')
-                            ->get();
+
+        $section = Section::where('url',$r->section_url)->first();
+        if ($section == null) {
+            return ["status"=>"notFound"];
+        }
     
+        $theme = Theme::where('section',$section->id)
+                        ->where('url',$r->theme_url)
+                        ->select('id','name', 'sort')
+                        ->first();
+
+        if ($theme == null) {
+            return ["status"=>"notFound"];
+        }
+
+        if ($user == null) {
             $data = [
-                'status' => 'success',
+                'status' => 'notAuth',
                 'section' => $section->name,
-                'theme' => $theme->sort.". ".$theme->name,
-                'paragraphs' => $paragraphs
+                'theme' => $theme->sort.". ".$theme->name
             ];
             return $data;
-            // return ['status'=>'notAuth'];
-        } else {
-            return ['status'=>'notAuth'];
         }
+        //Определяем разрешена ли тема
+        $permitions = $user->allowed_themes;
+        $permitions = json_decode($permitions);
+
+        if (gettype($permitions)!="array") {
+            $status = 'notAllowed';
+        } else {
+            $isAllowed=false;
+
+            for ($i=0;$i<count($permitions);$i++) {
+                if ($permitions[$i]->id == $theme->id and $permitions[$i]->allowed == 'true') {
+                    $isAllowed = true;
+                    break;
+                }
+            }
+
+            if (!$isAllowed) {
+                $data = [
+                    'status' => 'notAllowed',
+                    'section' => $section->name,
+                    'theme' => $theme->sort.". ".$theme->name
+                ];
+                return $data;
+            }
+        }
+
+        $paragraphs = Paragraph::where('theme',$theme->id)
+                        ->orderBy('sort', 'asc')
+                        ->get();
+
+        $data = [
+            'status' => 'success',
+            'section' => $section->name,
+            'theme' => $theme->sort.". ".$theme->name,
+            'paragraphs' => $paragraphs
+        ];
+        return $data;
+
     }
 
 }

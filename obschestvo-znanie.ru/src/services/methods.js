@@ -8,14 +8,14 @@ const $api = axios.create({
 });
 
 export const getSections = async function() {
-    return await $api.get(api.sections.get);
+    return $api.get(api.sections.get);
 }
 
 export const getThemesAndSectionBySectionUrl = async function(section_url) {
     let data = {
         "section_url":section_url
     }
-    return await $api.post(api.themes_and_section.get_by_section_url,data);
+    return $api.post(api.themes_and_section.get_by_section_url,data);
 }
 
 export const getParagraphsAndThemeByUrl = async function(section_url,theme_url) {
@@ -27,11 +27,11 @@ export const getParagraphsAndThemeByUrl = async function(section_url,theme_url) 
     }
 
     let data = {
-        "token":token,
+        "custom_token":token,
         "section_url":section_url,
         "theme_url":theme_url
     }
-    return await $api.post(api.paragraphs.get_by_theme_and_section_url,data);
+    return $api.post(api.paragraphs.get_by_theme_and_section_url,data);
 }
 
 export const authorization = async function(name,password) {
@@ -40,5 +40,5 @@ export const authorization = async function(name,password) {
         "password":password
     }
     console.log(api.users.authorization);
-    return await $api.post(api.users.authorization,data);
+    return $api.post(api.users.authorization,data);
 }
