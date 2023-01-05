@@ -44,13 +44,15 @@ class ParagraphCrudController extends CrudController
     {
         Widget::add()->type('style')->content('assets/css/paragraphs-listOperation-style.css');
         // CRUD::column('content')->label('контент')->type('textarea')->escaped('true');
+        
         $this->crud->addColumn([
             'name'=>'content',
             'label'=>'контент',
             'type'=>'textarea',
             'limit'  => 120,
             'escaped' => false
-        ]);        $this->crud->addColumn([
+        ]);        
+        $this->crud->addColumn([
             'name'=>'theme',
             'label'=>'Тема',
             // 'type'=>'text'

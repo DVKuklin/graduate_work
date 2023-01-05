@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Theme;
 use App\Models\Paragraph;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class DeveloperController extends Controller
 {
@@ -88,6 +89,30 @@ class DeveloperController extends Controller
         User::where('id',$r->user_id)->update(['allowed_themes'=>$jsonData]);
 
         return $jsonData;
+    }
+
+    public function getHeaders() {
+        $headers = apache_request_headers();
+        // foreach ($headers as $header => $value) {
+        //     echo "$header: $value <br />\n";
+        // }
+        // return "sdfsdf";
+        return $headers;
+    }
+
+    public function getToken(Request $request) {
+        $user = User::where("email",$request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return "Такого пользователя нет";
+        }
+
+        $token = $user->createToken("sdf");
+        return ["message"=>"Вы авторизованы",'token' => $token->plainTextToken];
+    }
+
+    public function getMe(Request $request) {
+        return $request->user();
     }
 }
 /*

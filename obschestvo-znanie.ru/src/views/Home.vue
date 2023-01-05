@@ -1,17 +1,19 @@
 <template>
     <center class = "conForIcRazd">
-        <h1 class="section-header">Разделы по&nbsp;курсу</h1>
-        <RouterLink v-for="(item, i) in sections" :key="i"  v-bind:to="item.url">	
-            <div class="icRazd">
-                <div class="inside">
-                    <div class="insideCell">
-                        <img :src="item.img" @:mouseover="imgMouseover(i)" v-on:mouseout="imgMouseout(i)">
-                        <br>
-                        {{item.name}}
-                    </div>
+        <h1 class="section-header">Разделы по курсу</h1>
+        <div class="icons-container">
+            <RouterLink v-for="(item, i) in sections" :key="i"  v-bind:to="item.url">	
+                <div class="icRazd">
+
+                        <div class="insideCell">
+                            <img :src="item.img" @:mouseover="imgMouseover(i)" v-on:mouseout="imgMouseout(i)">
+                            <br>
+                            {{item.name}}
+                        </div>
+
                 </div>
-            </div>
-        </RouterLink>
+            </RouterLink>
+        </div>
     </center>
 </template>
 
@@ -75,14 +77,19 @@
 	margin-right:auto;
 }
 
-/*Для документа главная страница*/
+.icons-container {
+    display:flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
 .icRazd {
-	display:inline-block;
+	display:flex;
+    justify-content: center;
+    align-items: center;
 	width:200px;
 	height:200px;
 	background-color:white;
-	/*border-radius:7px;*/
-	/*border:black solid 2px;*/
 	box-shadow:5px 5px 10px rgba(122,122,122,0.5);
 	margin:10px;
 	font-size:1.5em;
@@ -97,16 +104,8 @@
 	background-color:rgb(234,239,255);
 }
 
-.icRazd .inside {
-	display:table;
-	width:100%;
-	height:100%;
-}
-
 .icRazd .insideCell {
-	display:table-cell;
-	vertical-align:middle;
-	height:100%;
+    text-align: center;
 }
 
 .icRazd a {
@@ -124,46 +123,4 @@
     }
 } */
 </style>
-<!-- 
-        <a href="/section_2">	
-            <div class="icRazd">    
-                <div class="inside">
-                    <div class="insideCell">
-                        <img src="/myfiles/02_econ_red.webp"><br>
-                        Экономика
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/section_3">	
-            <div class="icRazd">
-                <div class="inside">
-                    <div class="insideCell">
-                        <img src="/myfiles/03_soc_otn_red.webp"><br>
-                        Социальные отношения
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/section_4">	
-            <div class="icRazd">
-                <div class="inside">
-                    <div class="insideCell">
-                        <img src="/myfiles/04_polit_red.webp"><br>
-                        Политика
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/section_5">	
-            <div class="icRazd">
-                <div class="inside">
-                    <div class="insideCell">
-                        <img src="/myfiles/05_pravo_red.webp"><br>
-                        Право
-                    </div>
-                </div>
-            </div>
-        </a>
 
- -->

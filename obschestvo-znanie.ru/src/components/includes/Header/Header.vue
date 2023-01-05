@@ -9,8 +9,6 @@
 
 <script>
 
-// import Sdf from "./somDir/Sdf.vue";
-// import { RouterLink, RouterView } from 'vue-router';
 import TopNav from './TopNav.vue';
 import TopLogo from './TopLogo.vue';
 
@@ -20,9 +18,6 @@ export default {
         TopNav,
 		TopLogo
     },
-    created() {
-        // console.log(this.$route);
-    }
 }
 </script>
 
@@ -54,7 +49,7 @@ header {
 	margin-top:10px;
 }
 
-@media screen and (max-width:915px){
+@media screen and (max-width:771px){
 	header {
 		grid-template-columns: 100%;
 	}

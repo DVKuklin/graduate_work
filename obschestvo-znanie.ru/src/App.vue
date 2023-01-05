@@ -2,7 +2,7 @@
 <div id="conForAll">
     <div>
 		<Header></Header>
-			
+		<BreadCrumbs v-if="isTheme"></BreadCrumbs>
 			<main>
 				<div id="conForContent">
 					<RouterView></RouterView>
@@ -12,40 +12,44 @@
 	</div>
 
 
-
-	<Footer></Footer>
+	<div>
+		<BreadCrumbs v-if="isTheme"></BreadCrumbs>
+		<Footer></Footer>
+	</div>
 </div>	
 </template>
 
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import Header from './components/includes/Header/Header.vue'
-import Footer from './components/includes/Footer.vue'
+import Footer from './components/includes/Footer.vue';
+import BreadCrumbs from './components/BreadCrumbs.vue';
 
 export default {
 	components: {
-		Header, Footer
+		Header, Footer, BreadCrumbs
 	},
+	data() {
+		return {
+			isTheme: false,
+		};
+	},
+	created() {
+		
+    },
 	mounted() {
-		//настройка подвала
-		// window.addEventListener('resize',footerResize);
-														
-		// function footerResize() {
-		// 	let f=document.getElementsByTagName('FOOTER');
-		// 	let c = conForContent.getBoundingClientRect();
-			
-		// 	if ( c.bottom > (document.documentElement.clientHeight - f[0].offsetHeight) ) {
-		// 		f[0].style.position = 'static';
-		// 		f[0].style.width = 'auto';
-		// 	} else {
-		// 		f[0].style.position = 'fixed';
-		// 		f[0].style.width = conForAll.offsetWidth - 5 + 'px';
-		// 	}
-		// }
 
-		// footerResize();
-		//End настройка подвала
-	}
+	},
+	watch: {
+		$route (to, from){
+			if (this.$route.meta.isTheme) {
+				this.isTheme = true
+			} else {
+				this.isTheme = false
+			}
+		}
+    },
+
 }
 
 

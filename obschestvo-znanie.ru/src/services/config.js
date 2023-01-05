@@ -22,6 +22,16 @@ const api = {
         authorization:  baseUrlApi + "/auth",
     },
 
+    test: {
+        get_headers: baseUrlApi + "/get_headers",
+    },
+
+    test: {
+        get_token: baseUrlApi + "/test_get_token",
+    },
+    test: {
+        get_me: baseUrlApi + "/test_get_me",
+    },
 
 
 

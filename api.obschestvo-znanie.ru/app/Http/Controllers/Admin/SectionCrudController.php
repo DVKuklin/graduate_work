@@ -40,8 +40,8 @@ class SectionCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->crud->addColumn([
-            'name' => 'name', // The db column name
-            'label' => "название", // Table column heading
+            'name' => 'name', 
+            'label' => "название", 
             'type' => 'text'
           ]);
         CRUD::column('url');

@@ -19,7 +19,5 @@ class UserExtendedController extends CrudController
         $this->crud->setEntityNameStrings('Расширенная панель пользователей', 'РАСШИРЕННАЯ ПАНЕЛЬ УПРАВЛЕНИЯ ПОЛЬЗОВАТЕЛЯМИ');
         $this->crud->setListView('custom_admin.user-extended');
 
-
-
     }
 }

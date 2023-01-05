@@ -18,8 +18,9 @@ class AdminApiController extends Controller
     //     "token":"sdfsdfsdfsdfsdf",
     //     "current_section":5
     // }
-    public function getDataForUserExtended(Request $r) {
-        if ($r->token != "sdfsdfsdfsdfsdf") {
+    public function getDataForUserExtended(Request $request) {
+
+        if ($request->token != "sdfsdfsdfsdfsdf") {
             return [
                 'status'=>'notfound',
                 'message'=>'Something went wrong.'
@@ -27,7 +28,7 @@ class AdminApiController extends Controller
         }
 
         //Верифицируем current_user
-        $user_id = (int)$r->current_user;
+        $user_id = (int)$request->current_user;
         if (gettype($user_id)!="integer") {
             $currentUser = User::select('id')->orderBy('id', 'asc')->get();
             $user_id = $currentUser[0]->id; 
@@ -42,7 +43,7 @@ class AdminApiController extends Controller
         }
 
         //Верификация current_section
-        $current_section = (int)$r->current_section;
+        $current_section = (int)$request->current_section;
         if (gettype($current_section)!="integer") {
             $currentSection = Section::select('id')->orderBy('id', 'asc')->get();
             $current_section = $currentSection[0]->id; 
@@ -176,21 +177,6 @@ class AdminApiController extends Controller
             ];
         }
 
-        // //Верифицируем current_user
-        // $user_id = (int)$r->current_user;
-        // if (gettype($user_id)!="integer") {
-        //     $currentUser = User::select('id')->orderBy('id', 'asc')->get();
-        //     $user_id = $currentUser[0]->id; 
-        // } else {
-        //     $currentUser = User::where('id',$user_id)->select('id')->first();
-        //     if ($currentUser) {
-        //         $user_id = $currentUser->id;
-        //     } else {
-        //         $currentUser = User::select('id')->orderBy('id', 'asc')->get();
-        //         $user_id = $currentUser[0]->id; 
-        //     }
-        // }
-
         //Верификация current_section
         $current_section = (int)$r->current_section;
         if (gettype($current_section)!="integer") {
@@ -234,41 +220,6 @@ class AdminApiController extends Controller
             $paragraphs = Paragraph::where('theme',$current_theme)->select('id','content','sort')->get();
             if (count($paragraphs)==0) $paragraphs = null;
         }
-
-        // //Пользователи
-        // $users = User::select('id','name')->get();
-
-        // //Разделы
-        // $sections = Section::select('id','name')->get();
-
-        // //Темы с разрешениями по пользователю
-        // $res = User::where('id',$user_id)->select('allowed_themes')->first();
-        // $permitions = json_decode($res->allowed_themes);
-
-        // $themes = Theme::where('section',$current_section)->select('id','sort','name')->get();
-
-        // $themes_with_permissions = [];
-
-        // for ($i=0;$i<count($themes);$i++) {
-        //     $permition=false;
-            
-        //     if ($permitions) {
-        //         for ($j=0;$j<count($permitions);$j++) {
-        //             if ($permitions[$j]->id == $themes[$i]->id) {
-        //                 $permition = $permitions[$j]->allowed;
-        //                 break;
-        //             }
-        //         }
-        //     }
-
-
-        //     $themes_with_permissions[$i] = [
-        //         'theme_id'=>$themes[$i]->id,
-        //         'theme'=>$themes[$i]->name,
-        //         'sort'=>$themes[$i]->sort,
-        //         'permition'=>$permition
-        //     ];
-        // }
 
         //Результирующий набор данных
         $data = [
