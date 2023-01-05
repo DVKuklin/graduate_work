@@ -39,6 +39,33 @@ export const authorization = async function(name,password) {
         "name":name,
         "password":password
     }
-    console.log(api.users.authorization);
+
     return $api.post(api.users.authorization,data);
 }
+
+
+
+//Здесь тестовые методы
+export const test = async function() {
+    return $api.get(api.test.get_headers);
+}
+
+export const test_get_token = async function(email,password) {
+    let data = {
+        "email":email,
+        "password":password
+    }
+    return $api.post(api.test.get_token,data);
+}
+
+// export const test_get_me = async function(email,password) {
+//     axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('token');
+//     axios
+//         .get('http://127.0.0.1:8000/api/test_get_me')
+//         .then(response => { 
+//             console.log('sssssssss');
+//             console.log(response)
+//         })
+//         .catch(error => console.log('Ошибка'+error));
+
+// }

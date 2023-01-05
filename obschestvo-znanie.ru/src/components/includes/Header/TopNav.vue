@@ -7,12 +7,12 @@
             <li>
                 <RouterLink to="/" title="Главная">Главная</RouterLink>
             </li>
-            <li>
+            <!-- <li>
                 <RouterLink to="/about/" title="О проекте">О проекте</RouterLink>
             </li>
             <li>
                 <RouterLink to="/contacts/" title="Контакты">Контакты</RouterLink>
-            </li>
+            </li> -->
             <li style="background-image: none">
                 <RouterLink to="/avt/" title="Авторизация">Авторизация</RouterLink>
             </li>
@@ -25,7 +25,6 @@ export default {
     name: 'TopNav',
     methods: {
         buttonMenuClick() {
-            // alert(desctopMenu);
             let tN = document.querySelector('header .topNav');
             let btn = document.querySelector('header .button-menu img');
 
@@ -50,11 +49,12 @@ export default {
         display:flex;
         justify-content: center;
         align-items: center;
-    }   .desctopMenu {
+    }   
+    .desctopMenu {
         max-width: 501px;
         min-width: 444px;
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         width: 90%;
         padding: 0;
         list-style-type: none;
@@ -68,7 +68,7 @@ export default {
     .desctopMenu li {
         display:block;
         padding:0;
-        margin: 0 7px;
+        margin: 0 10px;
     }
 
     .topNav li {
@@ -101,7 +101,7 @@ export default {
     }
 
 
-    @media screen and (max-width: 915px) {
+    @media screen and (max-width: 771px) {
     .desctopMenu {
         margin-bottom: 0px;
     }
@@ -129,7 +129,7 @@ export default {
                 height: 0px;
             }
             to{
-                height: 7rem;
+                height: 4rem;
             }
         }
         .topNav-close {
@@ -140,7 +140,7 @@ export default {
 
         @keyframes menu-close{
             from{
-                height: 7rem;
+                height: 4rem;
             }
             to{
                 height: 0px;

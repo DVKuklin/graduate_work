@@ -24,12 +24,19 @@ use App\Http\Controllers\Admin\AdminApiController;
 
 Route::controller(PagesController::class)->group(function() {
     Route::get('sections','getSections');
-    Route::post('get_themes_and_section_by_section_url','getThemesAndSectionBySectionUrl');
-    Route::post('get_paragraps_by_section_and_theme_url','getParagraphsBySectionAndThemeUrl');
+    Route::post('get_themes_and_section_by_section_url',
+                'getThemesAndSectionBySectionUrl');
+    Route::post('get_paragraps_by_section_and_theme_url',
+                'getParagraphsBySectionAndThemeUrl')->middleware('auth:sanctum');
+    Route::post('get_section_name_and_theme_name_by_url',
+                'getSectionNameAndThemeNameByUrl');
 });
 
 Route::controller(UserController::class)->group(function() {
     Route::post('auth','authUser');
+    Route::post('login','login');
+    Route::get('logout','logout')->middleware('auth:sanctum');
+    Route::get('get_user_name','getUserName')->middleware('auth:sanctum');
 });
 
 Route::controller(DeveloperController::class)->group(function() {
@@ -37,6 +44,9 @@ Route::controller(DeveloperController::class)->group(function() {
     Route::post('test','test');
     Route::post('set_theme_url','setThemeUrl');
     Route::post('set_allowed_themes','setAllowedThemes');
+    Route::get('get_headers','getHeaders');
+    Route::post('test_get_token','getToken');
+    Route::get('test_get_me','getMe')->middleware('auth:sanctum');
 });
 
 Route::controller(AdminApiController::class)->group(function() {
@@ -45,4 +55,7 @@ Route::controller(AdminApiController::class)->group(function() {
     Route::post('admin/set_permition','setPermition');
 });
 
+Route::get('/test', function (Request $request) {
+    return 'test';
+});
 

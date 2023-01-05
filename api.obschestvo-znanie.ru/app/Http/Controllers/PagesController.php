@@ -27,35 +27,58 @@ class PagesController extends Controller
         return $data;
     }
 
+    // URL get_section_name_and_theme_name_by_url
+    // {
+    //     "section_url":"section_5",
+    //     "theme_url":"them_36"
+    // }
+    function getSectionNameAndThemeNameByUrl(Request $request) {
 
+        $section = Section::where('url',$request->section_url)->select('name','id')->first();
+
+        if ($section == null) {
+            return ["status"=>"notFound"];
+        } 
+
+        $theme = Theme::where('section',$section->id)
+                        ->where('url',$request->theme_url)
+                        ->select('name', 'sort')
+                        ->first();
+        
+        if ($theme == null) {
+            return ["status"=>"notFound"];
+        }
+
+        return [
+            'status'=>'success',
+            'section_name' => $section->name,
+            'theme_name' => $theme->sort.'. '.$theme->name
+        ];
+    }
 
     // URL get_paragraps_by_section_and_theme_url
     // {
-    //     "custom_token":"FcecX5VdLm3f4wmas3HQtJH49eLhyXZ8Tm4PeGRTCwUVCA3PdCXCepM3ea15mHRrptwe26l9SQrgUnEL",
     //     "section_url":"section_5",
-    //     "theme_url":"theme_36"
+    //     "them_url":"theme_36"
     // }
-    function getParagraphsBySectionAndThemeUrl(Request $r) {
+    function getParagraphsBySectionAndThemeUrl(Request $request) {
         $status='';
 
-        $user = User::where('custom_token',$r->custom_token)
-                    ->select('allowed_themes','id')
-                    ->first();
-
-
-        $section = Section::where('url',$r->section_url)->first();
+        $section = Section::where('url',$request->section_url)->first();
         if ($section == null) {
             return ["status"=>"notFound"];
         }
     
         $theme = Theme::where('section',$section->id)
-                        ->where('url',$r->theme_url)
+                        ->where('url',$request->theme_url)
                         ->select('id','name', 'sort')
                         ->first();
 
         if ($theme == null) {
             return ["status"=>"notFound"];
         }
+
+        $user = $request->user();
 
         if ($user == null) {
             $data = [
@@ -104,5 +127,4 @@ class PagesController extends Controller
         return $data;
 
     }
-
 }

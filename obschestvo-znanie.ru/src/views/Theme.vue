@@ -1,9 +1,4 @@
 <template>
-    <BreadCrumbs v-bind:sectionURL="sectionURL"
-                    v-bind:theme="theme"
-                    v-bind:section="section"
-    ></BreadCrumbs>
-
     <div v-if="status == 'loading'"><span>Загрузка данных</span></div>
     <div v-if="status == 'success'" class="conForThem">
         <h3 align="center">{{theme}}</h3>
@@ -16,21 +11,18 @@
     <StatusMessage v-if="status == 'notAllowed'" v-bind:status="status"></StatusMessage>
     <StatusMessage v-if="status == 'notFound'" v-bind:status="status"></StatusMessage>
 
-
-
-    <BreadCrumbs v-bind:sectionURL="sectionURL"
-                    v-bind:theme="theme"
-                    v-bind:section="section"
-    ></BreadCrumbs>
 </template>
 
 <script>
-    import BreadCrumbs from '../components/BreadCrumbs.vue';
     import StatusMessage from '../components/StatusMessage.vue';
+    import axios from 'axios';
+    import {baseUrl} from '../services/config.js';
+
+
     import { getParagraphsAndThemeByUrl } from '../services/methods.js';
     export default {
         name: 'Theme',
-        components: {BreadCrumbs, StatusMessage},
+        components: {StatusMessage},
         data() {
             return {
                 paragraphs: [],
@@ -41,7 +33,39 @@
             }
         },
         async created() {
-            await this.getData();
+            axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('token');
+
+            let str = this.$route.path.slice(1,this.$route.path.length);
+            let urls = str.split("/");
+            let data = {
+                section_url: urls[0],
+                theme_url: urls[1]
+            }
+
+
+            axios
+                .post(baseUrl+'/api/get_paragraps_by_section_and_theme_url',data)
+                .then(response => { 
+                    console.log(response.data.status+"sdfsdfsdf");
+                    if (response.data.status == 'notAuth' || response.data.status == 'notAuth') {
+                        this.status='notAuth';
+                    } else if (response.data.status == 'success') {
+                        this.paragraphs = response.data.paragraphs;
+                        this.theme = response.data.theme;
+                        this.status='success';
+
+                    } else if (response.data.status == 'notAllowed') {
+                        this.status='notAllowed';
+                    } else if (response.data.status == 'notFound') {
+                        this.status='notFound';
+                    }
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        this.status = 'notAuth';
+                    }
+                    console.log(error.response);
+                });
         },
         methods: {
             async getData() {
@@ -49,12 +73,10 @@
                 let urls = str.split("/");
 
                 let data = await getParagraphsAndThemeByUrl(urls[0],urls[1]);
-                
-                console.log(data);
 
                 if (data.status == 'notAuth' || data.data.status == 'notAuth') {
                     this.status='notAuth';
-                    console.log(data.data.theme);
+
                     this.sectionURL = "/"+urls[0];
                     this.theme = data.data.theme;
                     this.section = data.data.section;
@@ -64,7 +86,7 @@
                     this.theme = data.data.theme;
                     this.section = data.data.section;
                     this.status='success';
-                    // console.log(data.data);
+
                 } else if (data.data.status == 'notAllowed') {
                     this.status='notAllowed';
                     this.sectionURL = "/"+urls[0];
@@ -73,10 +95,6 @@
                 } else if (data.data.status == 'notFound') {
                     this.status='notFound';
                 }
-
-
-
-
             }
         }
     }

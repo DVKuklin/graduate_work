@@ -64,7 +64,8 @@ async function addRoutes() {
     for (let j=0; j<tempThems.data.themes.length;j++) {
       routes.push({
         path: '/'+sections.data[i].url+'/'+tempThems.data.themes[j].url+'/',
-        component: Theme
+        component: Theme,
+        meta: {isTheme: true}
       })
     }
   }

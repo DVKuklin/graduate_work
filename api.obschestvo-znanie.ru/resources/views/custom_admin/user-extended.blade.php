@@ -37,15 +37,9 @@
                 <option selected>Название большого раздела</option>
                 <option>...</option>
             </select>        
-      
         </div>
         
     </div>
-
-
-
-
-
       <table  id="crudTable"
               class="bg-white table table-striped table-hover nowrap rounded shadow-xs border-xs mt-2" cellspacing="0"
               style="max-width:800px">
@@ -104,9 +98,17 @@
     dataBoot();
 
     function dataBoot() {
+      function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+          "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+      }
+
       //Загружаем данные и формируем таблицу
       $.ajax({
           url: baseURL+"get_data_for_user_extended",
+          headers: {'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')},
           data: {
               current_user: current_user,
               current_section: current_section,
@@ -131,19 +133,10 @@
                       s += `<option ${userActive} value="${item.id}">${item.name}</option>`;
 
                       userActive = "";
-                      // console.log(index);
-                      // inputUsers.options.push({
-                      //     text:item.name,
-                      //     value:item.id
-                      // });
-                      // inputUsers.options[index].text = item.name;
-                      // inputUsers.options[index].value = item.id;
                   });
 
                   inputUsers.innerHTML = s;
                   inputUsers.onchange = setCurrentUser;
-                  
-                  // inputUsers.options.selectedIndex = 0;
 
                   //Заполняем select разделы
                   s = '';
@@ -166,8 +159,6 @@
                   for (let i=0;i<data.themes.length;i++){
 
                       let permition = '';
-                      console.log(data.themes[i].theme);
-                      console.log(data.themes[i].permition);
                       if (data.themes[i].permition=='true') {
                           permition = 'checked';
                       }
@@ -185,12 +176,29 @@
                                   <label class="custom-control-label" for="customSwitch${i}"></label>
                                 </div>
                               </td>
-                            </tr>;` 
+                            </tr>` 
                   }
 
                   let tbody = crudTable.querySelector('tbody');
                   tbody.innerHTML = s;
               } 
+          },
+          error: function (jqXHR, exception) {
+            if (jqXHR.status === 0) {
+              alert('Not connect. Verify Network.');
+            } else if (jqXHR.status == 404) {
+              alert('Requested page not found (404).');
+            } else if (jqXHR.status == 500) {
+              alert('Internal Server Error (500).');
+            } else if (exception === 'parsererror') {
+              alert('Requested JSON parse failed.');
+            } else if (exception === 'timeout') {
+              alert('Time out error.');
+            } else if (exception === 'abort') {
+              alert('Ajax request aborted.');
+            } else {
+              alert('Uncaught Error. ' + jqXHR.responseText);
+            }
           }
       });
     }
@@ -209,9 +217,6 @@
     }
 
     function setPermition(el,theme_id) {
-      console.log('user '+localStorage.getItem('current_user'));
-      console.log(el.checked);
-      console.log(theme_id);
 
       $.ajax({
         url: baseURL+"set_permition",
@@ -223,13 +228,10 @@
         },       
         method: 'post',           
         success: function(data){ 
-            // console.log(data);
             location.reload();
         }
       });
     }
-
-
 </script>
 
 <style>
