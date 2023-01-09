@@ -22,25 +22,6 @@ export default {
 </script>
 
 <style scoped>
-@media screen and (max-width: 958px) {
-
-}
-
-
-@media screen and (min-width: 958px) {
-
-}
-
-
-/*Здесь надо сделать так, что бы при малых разрешениях загловок раздела делался ниже логотипа*/
-@media screen and (max-width: 600px) {
-
-}
-
-@media screen and (min-width: 600px) {
-
-}
-
 
 header {
 	display:grid;
