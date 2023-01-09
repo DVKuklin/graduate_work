@@ -103,7 +103,7 @@ export default {
 
     @media screen and (max-width: 771px) {
     .desctopMenu {
-        margin-bottom: 0px;
+        margin-bottom: 10px;
     }
 }
     @media screen and (max-width: 500px) {
